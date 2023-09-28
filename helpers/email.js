@@ -13,7 +13,7 @@ export const emailRegistro = async (datos) => {
     html: `<p>Hola: ${nombre} Comprueba tu cuenta en mi RedSocial</p>
     <p>Tu cuenta ya esta casi lista, solo debes comprobarla en el siguiente enlace: 
 
-    <a href="${process.env.FRONTEND_URL2}/confirmar/${token}">Comprobar Cuenta</a>
+    <a href="${process.env.FRONTEND_URL}/confirmar/${token}">Comprobar Cuenta</a>
     
     `,
   };
