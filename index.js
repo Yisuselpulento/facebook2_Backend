@@ -2,7 +2,8 @@ import express from "express";
 import dotenv from "dotenv";
  import cors from "cors"; 
 import conectarDB from "./config/db.js";
-import usuarioRoutes from "./routes/usuarioRoutes.js";
+import usuarioRoutes from "./routes/usuarioRoutes.js"
+import postsRoutes from "./routes/postsRoutes.js"
 
 const app = express();
 app.use(express.json());
@@ -13,7 +14,7 @@ conectarDB();
 
  const whitelist = [process.env.FRONTEND_URL];
 
-const corsOptions = {
+/* const corsOptions = {
   origin: function (origin, callback) {
     if (whitelist.includes(origin)) {
       callback(null, true);
@@ -21,12 +22,17 @@ const corsOptions = {
       callback(new Error("Error de Cors"));
     }
   },
+}; */
+
+const corsOptions = {
+  origin: process.env.FRONTEND_URL,
 };
 
 app.use(cors(corsOptions)); 
 
 
 app.use("/api/usuarios", usuarioRoutes);
+app.use("/api/posts", postsRoutes);
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
