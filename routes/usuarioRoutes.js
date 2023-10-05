@@ -8,11 +8,15 @@ import {
   comprobarToken,
   nuevoPassword,
   perfil,
+  getAllUsers
 } from "../controllers/usuarioController.js";
 
 import checkAuth from "../middleware/checkAuth.js";
 
-router.post("/", registrar); 
+router.route("/")
+        .post(registrar)
+       .get(checkAuth, getAllUsers)
+; 
 router.post("/login", autenticar);
 router.get("/confirmar/:token", confirmar);
 router.post("/olvide-password", olvidePassword);

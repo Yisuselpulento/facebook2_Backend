@@ -142,6 +142,16 @@ const perfil = async (req, res) => {
   res.json(usuario);
 };
 
+const getAllUsers = async (req,res) => {
+  const userid = req.usuario._id
+    try {  
+      const users = await Usuario.find()
+      res.json(users)
+    } catch (error) {
+      res.status(404).json({message : error})
+    }
+}
+
 export {
   registrar,
   autenticar,
@@ -150,4 +160,5 @@ export {
   comprobarToken,
   nuevoPassword,
   perfil,
+  getAllUsers
 };
