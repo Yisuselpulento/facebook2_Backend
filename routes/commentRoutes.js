@@ -1,7 +1,7 @@
 import express from "express";
 
 import {
-    getGlobalComment,
+  getComments,
     newComment,
     deleteComment
 } from '../controllers/commentController.js'
@@ -10,12 +10,11 @@ import checkAuth from "../middleware/checkAuth.js";
 const router = express.Router();
 
 
-router
-  .route("/")
-  .get(checkAuth, getGlobalComment)
-  .post(checkAuth, newComment);
+router.post("/:postId", checkAuth , newComment)
+router.get("/:postId", checkAuth , getComments)
+router.delete("/:commentId", checkAuth, deleteComment)
 
-router.delete("/:id", checkAuth, deleteComment)
+
 
 
 

@@ -2,49 +2,62 @@ import Comment from "../models/Comentarios.js"
 import Post from "../models/Posts.js"
 
 
-const getGlobalComment = async (req , res) => {
+const getComments = async (req , res) => {
+
+  try {
+    const comments = await Comment.find({ post: req.params.postId }).populate('author', 'nombre');
+    res.json(comments);
+} catch (error) {
+    res.status(500).json({ error: 'Hubo un error al obtener los comentarios' });
+}
     
 }
 
 
 const newComment = async (req , res) => {
 
+  const { postId } = req.params
  
-/*   try {
+   try {
     const newComment = new Comment({
-      content: req.body.content
+      content: req.body.content,
+      author : req.usuario._id,
+      post : postId,
+      NameAuthor : req.usuario.nombre
   });
-  newComment.author = req.usuario._id;
-  newComment.NameAuthor = req.usuario.nombre
-  newComment.post = 
 
   const commentSave = await newComment.save();
   res.json(commentSave);
-  
   } catch (error) {
     console.log(error)
   }
-     */
-
-/*   const { post } = req.body
-
-  const exist = await Post.findById(post)
-
-   if(!exist) {
-    const error = new Error("No existe el post")
-    return res.status(404).json({ msg : error.message})
-  }  */
-
-    
+        
 }
 
 
 const deleteComment = async (req , res) => {
+
+  try {
+    const comment = await Comment.findById(req.params.commentId);
+    
+    if (!comment) {
+        return res.status(404).json({ error: 'Comentario no encontrado' });
+    }
+
+    if (comment.author.toString() !== req.usuario._id.toString()) {
+        return res.status(403).json({ error: 'No tienes permiso para eliminar este comentario' });
+    }
+
+    await comment.deleteOne();
+    res.json({ success: 'Comentario eliminado con éxito' });
+} catch (error) {
+    res.status(500).json({ error: 'Hubo un error al eliminar el comentario' });
+}
     
 }
 
 export {
-    getGlobalComment,
+  getComments,
     newComment,
     deleteComment
 }
