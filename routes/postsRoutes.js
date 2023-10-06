@@ -14,8 +14,9 @@ const router = express.Router();
 router
   .route("/")
   .get(checkAuth, getGlobalPost)
-  .get(checkAuth, getAllPostsUsers)
   .post(checkAuth, newPost);
+
+router.get("/:userId" ,  checkAuth, getAllPostsUsers)
 
 router
  .route("/:id")

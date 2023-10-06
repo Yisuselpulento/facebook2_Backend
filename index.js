@@ -4,6 +4,7 @@ import dotenv from "dotenv";
 import conectarDB from "./config/db.js";
 import usuarioRoutes from "./routes/usuarioRoutes.js"
 import postsRoutes from "./routes/postsRoutes.js"
+import commentRoutes from "./routes/commentRoutes.js"
 
 const app = express();
 app.use(express.json());
@@ -33,6 +34,8 @@ app.use(cors(corsOptions));
 
 app.use("/api/usuarios", usuarioRoutes);
 app.use("/api/posts", postsRoutes);
+app.use("/api/comments", commentRoutes);
+
 
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
