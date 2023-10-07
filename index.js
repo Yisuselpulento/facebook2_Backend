@@ -5,6 +5,8 @@ import conectarDB from "./config/db.js";
 import usuarioRoutes from "./routes/usuarioRoutes.js"
 import postsRoutes from "./routes/postsRoutes.js"
 import commentRoutes from "./routes/commentRoutes.js"
+import messageRoutes from "./routes/messageRoutes.js"
+import { sendMessages } from "./controllers/messagesController.js";
 
 const app = express();
 app.use(express.json());
@@ -35,9 +37,34 @@ app.use(cors(corsOptions));
 app.use("/api/usuarios", usuarioRoutes);
 app.use("/api/posts", postsRoutes);
 app.use("/api/comments", commentRoutes);
+app.use("/api/messages", messageRoutes);
 
 
 const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => {
+const servidor = app.listen(PORT, () => {
   console.log(`Servidor corriendo en el puerto ${PORT}`);
 });
+
+import { Server } from 'socket.io'
+
+const io = new Server(servidor , {
+  pingTimeout: 60000,
+  cors : {
+    origin : process.env.FRONTEND_URL
+  }
+})
+
+io.on("connection", (socket) => {
+  console.log('Nuevo usuario conectado');
+
+  socket.on('send_message', (data) => {
+    console.log(data)
+    sendMessages(data)
+     
+      io.emit('receive_message', data);
+  });
+
+  socket.on('disconnect', () => {
+      console.log('Usuario desconectado');
+  }); 
+}  )
