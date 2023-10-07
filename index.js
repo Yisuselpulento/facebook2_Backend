@@ -60,7 +60,7 @@ io.on("connection", (socket) => {
    socket.on('send_message', (data) => {
     
      
-    socket.emit('receive_message', {
+    socket.broadcast.emit('receive_message', {
       content : data.content
     }); 
   });
