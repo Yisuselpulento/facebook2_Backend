@@ -1,15 +1,16 @@
 import Message from "../models/Mensajes.js"
 
 
-const sendMessages = async (data) => {
+const sendMessages = async (req, res) => {
    
     try {
         const message = new Message({
-            content : data.content,
-            user : data.user,
-            NameAuthor : data.name
+            content :req.body.content,
+            user : req.usuario._id,
+            NameAuthor : req.usuario.nombre
         });  // data debe tener { content, user: userId }
         await message.save()
+        res.json(message)
     } catch (error) {
         console.error("Error al guardar el mensaje", error);
     }
