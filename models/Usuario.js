@@ -26,6 +26,22 @@ const usuarioSchema = mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    image: {
+      type: String,
+      default: ''
+  },
+  sexo: { 
+      type: String, 
+      enum: ['male', 'female', 'other'] 
+  },
+  age: { 
+      type: Number, 
+      min: 0, 
+      max: 120 
+  },
+  country: {
+      type: String
+  }
   },
   {
     timestamps: true,
