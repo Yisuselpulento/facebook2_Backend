@@ -2,6 +2,8 @@ import Usuario from "../models/Usuario.js";
 import generarId from "../helpers/generarId.js";
 import generarJWT from "../helpers/generarJWT.js";
 import { emailRegistro, emailOlvidePassword } from "../helpers/email.js";
+import  fs from "fs"
+import path from "path";
 
 const registrar = async (req, res) => {
  
@@ -176,8 +178,51 @@ const actualizarUsuario = async (req, res) => {
     res.status(500).send(error);
 }
 
+}
 
+const upload = async (req,res) => {
 
+  if (!req.file) {
+    return res.status(400).send('Por favor, sube una imagen');
+  }
+  let image = req.file.originalname
+  let imageSplit = image.split("\.")
+  let extension = imageSplit[1]
+
+  if(extension != "png" && extension != "jpg" && extension != "jpeg" && extension != "gif") {
+
+    const filepPath = req.file.path;
+   const fileDeleted = fs.unlinkSync(filepPath)
+   return res.status(400).send({
+    status : "error",
+    message : "Extension del fichero invalida"
+   })
+  }
+  
+  try {
+    const user = await Usuario.findByIdAndUpdate( req.usuario._id,{ image: req.file.filename }, { new: true }) 
+    
+    return res.status(200).send(user)
+
+  } catch (error) {
+    console.log(error);
+  }
+
+}
+
+const avatar = async (req, res) => {
+
+  const file = req.params.file;
+  const filepath = "./uploads/avatars/" + file;
+
+  fs.stat(filepath, (error, exists) => {
+    if (error) { // Si hay un error o el archivo no existe
+      const defaultImagePath = "./uploads/avatars/default.jpg"; // Ajusta esto a la ruta de tu imagen por defecto.
+      return res.sendFile(path.resolve(defaultImagePath));
+    } else {
+      return res.sendFile(path.resolve(filepath));
+    }
+  });
 }
 
 export {
@@ -189,5 +234,7 @@ export {
   nuevoPassword,
   perfil,
   getAllUsers,
-  actualizarUsuario
+  actualizarUsuario,
+  upload,
+  avatar
 };

@@ -28,7 +28,7 @@ const usuarioSchema = mongoose.Schema(
     },
     image: {
       type: String,
-      default: ''
+      default: 'default.jpg'
   },
   sexo: { 
       type: String, 

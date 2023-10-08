@@ -29,11 +29,13 @@ const getAllPostsUsers = async (req , res) => {
 
 
 const newPost = async (req , res) => {
+
     const newPost = new Post({
         content: req.body.content
     });
     newPost.author = req.usuario._id;
     newPost.NameAuthor = req.usuario.nombre
+    newPost.image = req.usuario.image;
   
     try {
       const postSave = await newPost.save();
