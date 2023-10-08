@@ -52,7 +52,11 @@ const autenticar = async (req, res) => {
       _id: usuario._id,
       nombre: usuario.nombre,
       email: usuario.email,
+      sexo: usuario.sexo,
+      country: usuario.country,
+      age: usuario.age,
       token: generarJWT(usuario._id),
+
     });
   } else {
     const error = new Error("El Password es Incorrecto");
@@ -143,13 +147,37 @@ const perfil = async (req, res) => {
 };
 
 const getAllUsers = async (req,res) => {
-  const userid = req.usuario._id
     try {  
       const users = await Usuario.find()
       res.json(users)
     } catch (error) {
       res.status(404).json({message : error})
     }
+}
+
+const actualizarUsuario = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const updates = {
+        image: req.body.image,
+        sexo: req.body.sexo,
+        age: req.body.age,
+        country: req.body.country,
+    };
+
+    const user = await Usuario.findByIdAndUpdate(userId, updates, { new: true });
+
+    if (!user) {
+        return res.status(404).send({ message: 'Usuario no encontrado' });
+    }
+
+    res.send(user);
+} catch (error) {
+    res.status(500).send(error);
+}
+
+
+
 }
 
 export {
@@ -160,5 +188,6 @@ export {
   comprobarToken,
   nuevoPassword,
   perfil,
-  getAllUsers
+  getAllUsers,
+  actualizarUsuario
 };
