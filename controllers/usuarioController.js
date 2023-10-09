@@ -148,6 +148,20 @@ const perfil = async (req, res) => {
   res.json(usuario);
 };
 
+const getperfilUser = async (req, res) => {
+
+  try {
+    const user = await Usuario.findById(req.params.id)
+  
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+  }
+  res.status(200).json(user);
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+}
+
 const getAllUsers = async (req,res) => {
     try {  
       const users = await Usuario.find()
@@ -201,7 +215,7 @@ const upload = async (req,res) => {
   
   try {
     const user = await Usuario.findByIdAndUpdate( req.usuario._id,{ image: req.file.filename }, { new: true }) 
-    
+   
     return res.status(200).send(user)
 
   } catch (error) {
@@ -236,5 +250,6 @@ export {
   getAllUsers,
   actualizarUsuario,
   upload,
-  avatar
+  avatar,
+  getperfilUser
 };

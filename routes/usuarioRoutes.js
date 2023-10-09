@@ -11,7 +11,8 @@ import {
   getAllUsers,
   actualizarUsuario,
   upload,
-  avatar
+  avatar,
+  getperfilUser
 } from "../controllers/usuarioController.js";
 
 import checkAuth from "../middleware/checkAuth.js";
@@ -38,6 +39,7 @@ router.get("/confirmar/:token", confirmar);
 router.post("/olvide-password", olvidePassword);
 router.route("/olvide-password/:token").get(comprobarToken).post(nuevoPassword);
 router.get("/perfil", checkAuth, perfil);
+router.get("/perfil/:id", checkAuth, getperfilUser);
 router.put("/editar-perfil/:id", checkAuth, actualizarUsuario);
 router.post("/upload",[checkAuth, uploads.single("file0") ], upload )
 router.get("/avatar/:file", avatar);
