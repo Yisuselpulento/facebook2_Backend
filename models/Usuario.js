@@ -33,13 +33,13 @@ const usuarioSchema = mongoose.Schema(
   sexo: { 
       type: String, 
       enum: ['Supeior', 'Inferior', 'Otro'] ,
-      default: 'No editado'
+      default: 'Otro'
   },
   age: { 
       type: Number, 
       min: 0, 
       max: 120,
-      default: 'No editado'
+      default: 18
   },
   country: {
       type: String,

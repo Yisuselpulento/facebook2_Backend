@@ -5,7 +5,8 @@ import {
     getAllPostsUsers,
     newPost,
     getPost,
-    deletePost
+    deletePost,
+    giveLike
 } from "../controllers/postsController.js";
 import checkAuth from "../middleware/checkAuth.js";
 
@@ -17,6 +18,7 @@ router
   .post(checkAuth, newPost);
 
 router.get("/:userId" ,  checkAuth, getAllPostsUsers)
+router.put("/:id/like" ,  checkAuth, giveLike)
 
 router
  .route("/:id")

@@ -27,6 +27,14 @@ const newComment = async (req , res) => {
   });
 
   const commentSave = await newComment.save();
+
+  const postToUpdate = await Post.findById(postId);
+  if (!postToUpdate) {
+    return res.status(404).json({ message: "Post no encontrado" });
+  }
+  postToUpdate.comments.push(commentSave._id);
+  await postToUpdate.save();
+
   res.json(commentSave);
   } catch (error) {
     console.log(error)

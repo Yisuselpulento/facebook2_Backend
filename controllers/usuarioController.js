@@ -145,6 +145,10 @@ const nuevoPassword = async (req, res) => {
 const perfil = async (req, res) => {
   const { usuario } = req;
 
+  if (!usuario) {
+    return res.status(400).json({ error: 'Usuario no encontrado' });
+  }
+
   res.json(usuario);
 };
 

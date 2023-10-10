@@ -6,10 +6,10 @@ const postSchema =  mongoose.Schema({
         type: String,
         required: true
     },
-    likes: {
-        type: Number,
-        default: 0
-    },
+    likes: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Usuario'
+    }],
     comments: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Comment'
@@ -19,18 +19,10 @@ const postSchema =  mongoose.Schema({
         ref: 'Usuario',  
         required: true
     },
-    NameAuthor: {
-        type: String,
-        required: true
-    },
     createdAt: {
         type: Date,
         default: Date.now
-    },
-    image: {
-        type: String,
-         
-    },
+    },   
 });
 
 const Post = mongoose.model('Post', postSchema);
