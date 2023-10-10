@@ -224,7 +224,8 @@ const upload = async (req,res) => {
 
   } catch (error) {
     console.log(error);
-  }
+    res.status(500).send({ message: error.message });
+}
 
 }
 
@@ -234,8 +235,8 @@ const avatar = async (req, res) => {
   const filepath = "./uploads/avatars/" + file;
 
   fs.stat(filepath, (error, exists) => {
-    if (error) { // Si hay un error o el archivo no existe
-      const defaultImagePath = "./uploads/avatars/default.jpg"; // Ajusta esto a la ruta de tu imagen por defecto.
+    if (error) {
+      const defaultImagePath = "./uploads/avatars/default.jpg"; 
       return res.sendFile(path.resolve(defaultImagePath));
     } else {
       return res.sendFile(path.resolve(filepath));
