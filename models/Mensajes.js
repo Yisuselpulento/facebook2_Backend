@@ -14,10 +14,6 @@ const messageSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
-    NameAuthor: {
-        type: String,
-        required: true
-    }
 });
 
 const Message = mongoose.model('Message', messageSchema);

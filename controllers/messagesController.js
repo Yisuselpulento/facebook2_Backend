@@ -6,13 +6,19 @@ const sendMessages = async (req, res) => {
     try {
         const message = new Message({
             content :req.body.content,
-            user : req.usuario._id,
-            NameAuthor : req.usuario.nombre
-        });  // data debe tener { content, user: userId }
+            user : req.usuario._id
+        }); 
         await message.save()
-        res.json(message)
+
+        const populatedMessage = await Message.findById(message._id).populate({
+            path: 'user',
+            select: 'nombre _id image' 
+        });
+
+        res.json(populatedMessage)
     } catch (error) {
         console.error("Error al guardar el mensaje", error);
+        res.status(500).json({ error: "Error al guardar el mensaje" })
     }
     
 }
