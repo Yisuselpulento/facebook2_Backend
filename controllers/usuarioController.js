@@ -66,6 +66,26 @@ const autenticar = async (req, res) => {
   }
 };
 
+const buscarPorNombre = async (req, res) => {
+  try {
+    const nombre = req.params.nombre;
+
+    if (!nombre) {
+      return res.status(400).json({ error: 'El nombre es requerido' });
+    }
+
+    const usuarios = await Usuario.find({ nombre: new RegExp(nombre, 'i') });  // Usamos una RegExp para una búsqueda insensible a mayúsculas/minúsculas.
+
+    if (!usuarios.length) {
+      return res.status(404).json({ error: 'No se encontraron usuarios' });
+    }
+
+    return res.status(200).json(usuarios);
+  } catch (error) {
+    return res.status(500).json({ error: 'Error interno del servidor' });
+  }
+}
+
 const confirmar = async (req, res) => {
   const { token } = req.params;
   const usuarioConfirmar = await Usuario.findOne({ token });
@@ -107,6 +127,8 @@ const olvidePassword = async (req, res) => {
     console.log(error);
   }
 };
+
+
 
 const comprobarToken = async (req, res) => {
   const { token } = req.params;
@@ -256,5 +278,6 @@ export {
   actualizarUsuario,
   upload,
   avatar,
-  getperfilUser
+  getperfilUser,
+  buscarPorNombre
 };
