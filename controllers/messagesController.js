@@ -25,9 +25,9 @@ const sendMessages = async (req, res) => {
 
 const getMessages = async (req , res) => {
     try {
-        // Obtiene los mensajes y la información del usuario relacionado.
+       
         const messages = await Message.find()
-            .populate('user', 'nombre') // Solo obtiene el campo 'username', excluye el '_id'
+            .populate('user', 'nombre image') 
             .sort({ timestamp: 1 });
         
         res.json(messages);
