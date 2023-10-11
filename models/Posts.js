@@ -7,8 +7,12 @@ const postSchema =  mongoose.Schema({
         required: true
     },
     likes: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Usuario'
+        userId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'Usuario'
+        },
+        userName: String,
+        userImage: String
     }],
     comments: [{
         type: mongoose.Schema.Types.ObjectId,

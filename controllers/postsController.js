@@ -21,15 +21,16 @@ const getGlobalPost = async (req , res) => {
     }
 }
 
-const getAllPostsUsers = async (req , res) => {
+const getAllPostsUsers = async (req, res) => {
     try {
         const posts = await Post.find({ author: req.params.userId })
                                 .populate('author', 'image nombre') 
                                 .sort({ createdAt: -1 })
                                 .exec();
         
+     
         if (!posts || posts.length === 0) {
-            return res.status(404).json({ message: 'No se encontraron posts para este usuario' });
+            return res.json([]);  
         }
         
         res.json(posts);
@@ -82,41 +83,53 @@ const deletePost = async (req , res) => {
     }
 }
 
-const giveLike = async (req , res) => {
-    
+const giveLike = async (req, res) => {
     try {
         const postId = req.params.id;
-        const userId = req.usuario._id; 
+        const userId = req.usuario._id;
+        const userName = req.usuario.nombre;
+        const userImage = req.usuario.image;
         const post = await Post.findById(postId);
 
         if (!userId) {
-            return res.status(404).send({ message: "usuario no encontrado." });
+            return res.status(404).send({ message: "Usuario no encontrado." });
         }
 
         if (!post) {
             return res.status(404).send({ message: "Post no encontrado." });
         }
-        if (!post.likes) {
-            return res.status(500).send({ message: "El post no tiene 'likes' definidos." });
-        }
-       
-        const hasLiked = post.likes.some((likeId) => likeId.equals(userId));
 
-        if (hasLiked) {
-          
-            post.likes.pull(userId);
+        if (!post.likes) {
+            post.likes = [];
+        }
+
+        // Verificamos si el usuario ya le dio like al post
+        const likeIndex = post.likes.findIndex(like => like.userId.equals(userId));
+
+        let hasLiked;
+        if (likeIndex !== -1) {
+            post.likes.splice(likeIndex, 1);
+            hasLiked = false;
         } else {
-           
-            post.likes.push(userId);
+            post.likes.push({ userId, userName, userImage });
+            hasLiked = true;
         }
 
         await post.save();
 
-        res.status(200).send({ likesCount: post.likes.length, hasLiked: !hasLiked });
+        res.status(200).send({
+            likesCount: post.likes.length,
+            hasLiked,
+            user: {
+                userId,
+                userName,
+                userImage
+            }
+        });
     } catch (error) {
         res.status(500).send({ message: "Error al procesar la solicitud.", error: error.message });
     }
-}
+};
 
 export {
     getGlobalPost,
