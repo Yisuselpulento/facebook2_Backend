@@ -15,32 +15,33 @@ const getComments = async (req , res) => {
 
 
 const newComment = async (req , res) => {
+  const { postId } = req.params;
+  try {
 
-  const { postId } = req.params
- 
-   try {
     const newComment = new Comment({
-      content: req.body.content,
-      author : req.usuario._id,
-      post : postId,
-      NameAuthor : req.usuario.nombre
-  });
+        content: req.body.content,
+        author: req.usuario._id,
+        post: postId
+    });
 
-  const commentSave = await newComment.save();
+    const savedComment = await newComment.save();
+     const populatedComment = await Comment.findById(savedComment._id).populate('author', 'nombre');
+    const postToUpdate = await Post.findById(postId);
+    if (!postToUpdate) {
+        return res.status(404).json({ message: "Post no encontrado" });
+    }
+    postToUpdate.comments.push(savedComment._id);
+    await postToUpdate.save();
 
-  const postToUpdate = await Post.findById(postId);
-  if (!postToUpdate) {
-    return res.status(404).json({ message: "Post no encontrado" });
-  }
-  postToUpdate.comments.push(commentSave._id);
-  await postToUpdate.save();
+    // Devolver el comentario poblado
+    res.json(populatedComment);
 
-  res.json(commentSave);
   } catch (error) {
-    console.log(error)
-  }
-        
+    console.log("Error al crear comentario:", error); 
+    res.status(500).json({ error: 'Hubo un error al crear el comentario', details: error.message });
+ }
 }
+
 
 
 const deleteComment = async (req , res) => {
