@@ -21,47 +21,38 @@ const getGlobalPost = async (req , res) => {
     }
 }
 
-const getAllPostsUsers = async (req, res) => {
-    try {
-        const posts = await Post.find({ author: req.params.userId })
-                                .populate('author', 'image nombre') 
-                                .sort({ createdAt: -1 })
-                                .exec();
-        
-     
-        if (!posts || posts.length === 0) {
-            return res.json([]);  
-        }
-        
-        res.json(posts);
-    } catch (error) {
-        res.status(500).json({ error: 'Hubo un error al obtener los posts del usuario' });
-    }
-}
 
-
-const newPost = async (req , res) => {
-
+const newPost = async (req, res) => {
     const newPost = new Post({
-        content: req.body.content
+        content: req.body.content,
+        author: req.usuario._id,
+        NameAuthor: req.usuario.nombre,
+        image: req.usuario.image,
+        likes: []
     });
-    newPost.author = req.usuario._id;
-    newPost.NameAuthor = req.usuario.nombre
-    newPost.image = req.usuario.image;
-    newPost.likes = [];
-  
+
     try {
-      const postSave = await newPost.save();
-      res.json(postSave);
+        await newPost.save();
+
+        // Populamos el post guardado con la información detallada del autor.
+        const populatedPost = await Post.findById(newPost._id)
+                                        .populate('author', 'image nombre')
+                                        .populate({
+                                            path: 'comments',
+                                            populate: {
+                                                path: 'author',
+                                                select: 'nombre'
+                                            }
+                                        })
+                                        .exec();
+
+        res.json(populatedPost);
     } catch (error) {
-      console.log("error al crear post", error);
+        console.log("error al crear post", error);
+        res.status(500).json({ message: "Error al crear el post", error: error.message });
     }
-    
 }
 
-const getPost = async (req , res) => {
-    
-}
 
 const deletePost = async (req , res) => {
 
@@ -133,9 +124,7 @@ const giveLike = async (req, res) => {
 
 export {
     getGlobalPost,
-    getAllPostsUsers,
     newPost,
-    getPost,
     deletePost,
     giveLike
 }

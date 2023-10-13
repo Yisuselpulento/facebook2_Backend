@@ -2,9 +2,7 @@ import express from "express";
 
 import {
     getGlobalPost,
-    getAllPostsUsers,
     newPost,
-    getPost,
     deletePost,
     giveLike
 } from "../controllers/postsController.js";
@@ -17,12 +15,10 @@ router
   .get(checkAuth, getGlobalPost)
   .post(checkAuth, newPost);
 
-router.get("/:userId" ,  checkAuth, getAllPostsUsers)
 router.put("/:id/like" ,  checkAuth, giveLike)
 
 router
  .route("/:id")
-  .get(checkAuth, getPost)
   .delete(checkAuth, deletePost);
 
 
