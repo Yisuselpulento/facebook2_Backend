@@ -94,7 +94,6 @@ const giveLike = async (req, res) => {
             post.likes = [];
         }
 
-        // Verificamos si el usuario ya le dio like al post
         const likeIndex = post.likes.findIndex(like => like.userId.equals(userId));
 
         let hasLiked;
