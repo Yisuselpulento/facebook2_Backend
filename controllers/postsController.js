@@ -114,7 +114,8 @@ const giveLike = async (req, res) => {
                 userId,
                 userName,
                 userImage
-            }
+            },
+            likesUsers: post.likes
         });
     } catch (error) {
         res.status(500).send({ message: "Error al procesar la solicitud.", error: error.message });
