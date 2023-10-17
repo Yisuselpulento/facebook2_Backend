@@ -55,14 +55,21 @@ const io = new Server(servidor , {
 })
 
 io.on("connection", (socket) => {
-  console.log('Nuevo usuario conectado');
+  console.log('Usuario conectado');
 
    socket.on('send_message', (data) => {
-    
+    console.log(data)
      
-    socket.broadcast.emit('receive_message', {
+     io.emit('receive_message', {
       content : data.content
-    }); 
+    });  
+  });
+
+
+
+  socket.on('disconnect', () => {
+      console.log('Usuario desconectado')
+    
   });
 
   
