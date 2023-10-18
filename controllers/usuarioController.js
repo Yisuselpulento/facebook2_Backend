@@ -221,35 +221,37 @@ const actualizarUsuario = async (req, res) => {
 
 }
 
-const upload = async (req,res) => {
-
+const upload = async (req, res) => {
   if (!req.file) {
     return res.status(400).send('Por favor, sube una imagen');
   }
-  let image = req.file.originalname
-  let imageSplit = image.split("\.")
-  let extension = imageSplit[1]
+  
+  let image = req.file.originalname;
+  let imageSplit = image.split(".");
+  let extension = imageSplit[imageSplit.length - 1];
 
-  if(extension != "png" && extension != "jpg" && extension != "jpeg" && extension != "gif") {
-
-    const filepPath = req.file.path;
-   const fileDeleted = fs.unlinkSync(filepPath)
-   return res.status(400).send({
-    status : "error",
-    message : "Extension del fichero invalida"
-   })
+  if (extension != "png" && extension != "jpg" && extension != "jpeg" && extension != "gif") {
+    const filePath = req.file.path;
+    fs.unlinkSync(filePath);
+    return res.status(400).send({
+      status: "error",
+      message: "Extension del fichero invalida"
+    });
   }
   
   try {
-    const user = await Usuario.findByIdAndUpdate( req.usuario._id,{ image: req.file.filename }, { new: true }) 
+    const user = await Usuario.findByIdAndUpdate(
+      req.usuario._id,
+      { image: req.file.filename },
+      { new: true }
+    ).select('_id nombre image age country sexo');  
    
-    return res.status(200).send(user)
+    return res.status(200).send(user);
 
   } catch (error) {
     console.log(error);
     res.status(500).send({ message: error.message });
-}
-
+  }
 }
 
 const avatar = async (req, res) => {
