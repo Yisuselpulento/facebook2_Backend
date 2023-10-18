@@ -222,9 +222,17 @@ const actualizarUsuario = async (req, res) => {
 }
 
 const upload = async (req, res) => {
-  if (!req.file) {
-    return res.status(400).send('Por favor, sube una imagen');
-  }
+
+ // Log para verificar que la función se invoca correctamente
+ console.log("Función Upload Invocada.");
+
+ // Log para verificar el contenido de req.file
+ console.log("req.file:", req.file);
+
+ if (!req.file) {
+   return res.status(400).send('Por favor, sube una imagen');
+ }
+
   
   let image = req.file.originalname;
   let imageSplit = image.split(".");
@@ -240,6 +248,9 @@ const upload = async (req, res) => {
   }
   
   try {
+
+    console.log("Actualizando usuario con imagen:", req.file.filename);
+
     const user = await Usuario.findByIdAndUpdate(
       req.usuario._id,
       { image: req.file.filename },
