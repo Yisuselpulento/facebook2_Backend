@@ -272,20 +272,19 @@ const upload = async (req, res) => {
   }
 }
 
-const avatar = async (req, res) => {
-
+const avatar = (req, res) => {
   const file = req.params.file;
-  const filepath = "./uploads/avatars/" + file;
+  const filepath = path.resolve("./uploads/avatars/" + file);
+  const defaultImagePath = path.resolve("./uploads/avatars/default.jpg");
 
-  fs.stat(filepath, (error, exists) => {
-    if (error) {
-      const defaultImagePath = "./uploads/avatars/default.jpg"; 
-      return res.sendFile(path.resolve(defaultImagePath));
-    } else {
-      return res.sendFile(path.resolve(filepath));
-    }
+  fs.access(filepath, fs.constants.F_OK, (error) => {
+      if (error) {
+          console.error(`File not found: ${filepath}`);
+          return res.sendFile(defaultImagePath);
+      }
+      return res.sendFile(filepath);
   });
-}
+};
 
 export {
   registrar,
