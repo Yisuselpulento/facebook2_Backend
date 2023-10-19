@@ -6,7 +6,6 @@ import usuarioRoutes from "./routes/usuarioRoutes.js"
 import postsRoutes from "./routes/postsRoutes.js"
 import commentRoutes from "./routes/commentRoutes.js"
 import messageRoutes from "./routes/messageRoutes.js"
-import { sendMessages } from "./controllers/messagesController.js";
 
 const app = express();
 app.use(express.json());
